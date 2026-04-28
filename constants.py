@@ -1,0 +1,19 @@
+UP = 'UP'
+DOWN = 'DOWN'
+LEFT = 'LEFT'
+RIGHT = 'RIGHT'
+ACTIONS = [UP, DOWN, LEFT, RIGHT]
+
+DIRECTION_VECTORS = {
+    UP:    (-1,  0),
+    DOWN:  ( 1,  0),
+    LEFT:  ( 0, -1),
+    RIGHT: ( 0,  1),
+}
+
+BOARD_SIZE = 10
+
+REWARD_GREEN = 20.0
+REWARD_RED   = -10.0
+REWARD_DEATH = -50.0
+REWARD_STEP  = -0.2
