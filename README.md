@@ -2,20 +2,12 @@
 
 Snake game with Q-learning reinforcement learning (42 project).
 
-## Installation
-
-### Option 1 — venv (recommended)
+### setup
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-### Option 2 — user install (no sudo needed)
-
-```bash
-pip3 install --user -r requirements.txt
 ```
 
 ## Usage
@@ -46,17 +38,3 @@ python3 main.py -load models/100sess.txt -sessions 10 -visual on -dontlearn -spe
 
 - `ESC` — quit
 - Any key — next step (step-by-step mode)
-
-## Project structure
-
-```
-.
-├── main.py          # Entry point, CLI argument parsing
-├── board.py         # 10x10 environment, game logic, rewards
-├── snake.py         # Snake data structure and movement
-├── agent.py         # Q-learning agent (Q-table, epsilon-greedy)
-├── display.py       # Pygame graphical display + terminal vision
-├── constants.py     # Shared constants (directions, rewards, board size)
-├── requirements.txt
-└── models/          # Saved model files (.txt, JSON format)
-```
