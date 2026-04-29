@@ -1,6 +1,7 @@
 import sys
 import time
 from constants import BOARD_SIZE
+import pygame
 
 CELL_SIZE = 60
 MARGIN = 2
@@ -23,7 +24,6 @@ class Display:
         self.screen = None
 
         if self.visual:
-            import pygame
             self.pygame = pygame
             pygame.init()
             self.screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
