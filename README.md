@@ -21,16 +21,12 @@ pip3 install --user -r requirements.txt
 ## Usage
 
 ```bash
-# Basic run (visual on, 1 session)
 python3 main.py
 
-# Train 100 sessions silently and save the model
 python3 main.py -sessions 100 -visual off -save models/100sess.txt
 
-# Load a model and watch it play step by step
 python3 main.py -load models/100sess.txt -visual on -dontlearn -step-by-step
 
-# Load a model, run 10 sessions at high speed without learning
 python3 main.py -load models/100sess.txt -sessions 10 -visual on -dontlearn -speed 0.05
 ```
 
