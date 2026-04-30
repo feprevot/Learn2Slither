@@ -35,7 +35,8 @@ def run(args):
 
     visual = args.visual == "on"
     display = Display(visual=visual, speed=args.speed, step_by_step=args.step_by_step)
-
+    best_score = 0
+    
     for session in range(args.sessions):
         board = Board()
         done = False
@@ -67,10 +68,14 @@ def run(args):
 
             if visual:
                 display.wait(done)
+            
+            if max_length > best_score:
+                best_score = max_length
 
         print(f"Game over, max length = {max_length}, max duration = {steps}")
 
     display.close()
+    print(f"Best score across all sessions: {best_score}")
 
     if args.save:
         agent.save(args.save)
