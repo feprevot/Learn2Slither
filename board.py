@@ -1,5 +1,5 @@
 import random
-from snake import Snake
+from snake_class import Snake
 from constants import (
     UP, DOWN, LEFT, RIGHT, ACTIONS, DIRECTION_VECTORS, BOARD_SIZE,
     REWARD_GREEN, REWARD_RED, REWARD_DEATH, REWARD_STEP,
@@ -98,41 +98,40 @@ class Board:
                 return REWARD_RED, True
             return REWARD_RED, False
 
-        return REWARD_STEP, False
+        return REWARD_STEP , False
 
     # ------------------------------------------------------------------ state
 
     def get_state(self):
         """
-        Compact state: for each direction (UP, DOWN, LEFT, RIGHT) return
-        the first relevant object seen from the head:
-          'D' = danger (wall or body segment)
-          'G' = green apple
-          'R' = red apple
-          '0' = nothing before the wall
-        State space: 4^4 = 256 states → high revisit rate, fast Q-value convergence.
+        Per direction, encode (first_object_seen, distance_bucket).
+          first_object_seen ∈ {'D' wall/body, 'G' green, 'R' red}
+          distance_bucket  ∈ {1 = next cell, 2 = 2-3 cells, 3 = farther}
+        => 3 types × 3 buckets = 9 values per direction
+        => 9^4 ≈ 6500 possible states, ~hundreds reachable in practice.
         """
         head = self.snake.head()
         state = []
         for direction in [UP, DOWN, LEFT, RIGHT]:
             dr, dc = DIRECTION_VECTORS[direction]
             r, c = head[0] + dr, head[1] + dc
-            cell = '0'
+            dist = 1
+            cell = 'D'
             while 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE:
                 if (r, c) in self.snake.segments:
                     cell = 'D'
                     break
-                elif (r, c) in self.green_apples:
+                if (r, c) in self.green_apples:
                     cell = 'G'
                     break
-                elif (r, c) == self.red_apple:
+                if (r, c) == self.red_apple:
                     cell = 'R'
                     break
                 r += dr
                 c += dc
-            else:
-                cell = 'D'  # hit the wall
-            state.append(cell)
+                dist += 1
+            bucket = 1 if dist == 1 else (2 if dist <= 3 else 3)
+            state.append(f"{cell}{bucket}")
         return tuple(state)
 
     def format_vision(self):

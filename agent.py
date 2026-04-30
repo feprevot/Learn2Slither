@@ -1,10 +1,11 @@
+import ast
 import random
 import json
 from constants import ACTIONS
 
 
 class Agent:
-    def __init__(self, alpha=0.2, gamma=0.95, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.999):
+    def __init__(self, alpha=0.1, gamma=0.95, epsilon=1.0, epsilon_min=0.10, epsilon_decay=0.99995):
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
@@ -60,7 +61,7 @@ class Agent:
     def load(self, path):
         with open(path, 'r') as f:
             data = json.load(f)
-        self.q_table = {eval(k): v for k, v in data["q_table"].items()}
+        self.q_table = {ast.literal_eval(k): v for k, v in data["q_table"].items()}
         self.epsilon = data.get("epsilon", self.epsilon_min)
         self.alpha = data.get("alpha", self.alpha)
         self.gamma = data.get("gamma", self.gamma)
