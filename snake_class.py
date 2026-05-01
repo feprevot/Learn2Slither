@@ -36,5 +36,5 @@ class Snake:
     def head_collides_body(self):
         return self.head() in self.segments[1:]
 
-    def occupies(self, pos): 
+    def occupies(self, pos):
         return pos in self.segments

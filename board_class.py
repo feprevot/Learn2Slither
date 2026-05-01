@@ -75,7 +75,8 @@ class Board:
         new_head = (r + dr, c + dc)
 
         # Wall collision
-        if not (0 <= new_head[0] < BOARD_SIZE and 0 <= new_head[1] < BOARD_SIZE):
+        if not (0 <= new_head[0] < BOARD_SIZE and
+                0 <= new_head[1] < BOARD_SIZE):
             return REWARD_DEATH, True
 
         _, tail = self.snake.move(action)
@@ -97,8 +98,7 @@ class Board:
             if self.snake.length() == 0:
                 return REWARD_RED, True
             return REWARD_RED, False
-
-        return REWARD_STEP , False
+        return REWARD_STEP, False
 
     # ------------------------------------------------------------------ state
 
@@ -135,7 +135,8 @@ class Board:
         return tuple(state)
 
     def format_vision(self):
-        """Return a human-readable string of the snake's vision for terminal display."""
+        """Return a human-readable string of the
+        snake's vision for terminal display."""
         head = self.snake.head()
         lines = []
         for direction in [UP, DOWN, LEFT, RIGHT]:

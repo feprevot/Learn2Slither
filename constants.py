@@ -5,15 +5,15 @@ RIGHT = 'RIGHT'
 ACTIONS = [UP, DOWN, LEFT, RIGHT]
 
 DIRECTION_VECTORS = {
-    UP:    (-1,  0),
-    DOWN:  ( 1,  0),
-    LEFT:  ( 0, -1),
-    RIGHT: ( 0,  1),
+    UP: (-1,  0),
+    DOWN: (1,  0),
+    LEFT: (0, -1),
+    RIGHT: (0,  1),
 }
 
 BOARD_SIZE = 10
 
-REWARD_GREEN   = 50
-REWARD_RED     = -20
-REWARD_DEATH   = -50
-REWARD_STEP    = -3
+REWARD_GREEN = 50
+REWARD_RED = -20
+REWARD_DEATH = -50
+REWARD_STEP = -3

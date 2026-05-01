@@ -7,13 +7,13 @@ CELL_SIZE = 60
 MARGIN = 2
 WINDOW_SIZE = BOARD_SIZE * CELL_SIZE
 
-COLOR_BG         = (30, 30, 30)
-COLOR_GRID       = (45, 45, 45)
+COLOR_BG = (30, 30, 30)
+COLOR_GRID = (45, 45, 45)
 COLOR_SNAKE_HEAD = (50, 120, 255)
 COLOR_SNAKE_BODY = (30, 80, 200)
-COLOR_GREEN      = (60, 200, 80)
-COLOR_RED        = (220, 50, 50)
-COLOR_TEXT       = (220, 220, 220)
+COLOR_GREEN = (60, 200, 80)
+COLOR_RED = (220, 50, 50)
+COLOR_TEXT = (220, 220, 220)
 
 
 class Display:
@@ -38,8 +38,10 @@ class Display:
         self.screen.fill(COLOR_BG)
 
         for i in range(BOARD_SIZE + 1):
-            pg.draw.line(self.screen, COLOR_GRID, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE))
-            pg.draw.line(self.screen, COLOR_GRID, (0, i * CELL_SIZE), (WINDOW_SIZE, i * CELL_SIZE))
+            pg.draw.line(self.screen, COLOR_GRID,
+                         (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE))
+            pg.draw.line(self.screen, COLOR_GRID,
+                         (0, i * CELL_SIZE), (WINDOW_SIZE, i * CELL_SIZE))
 
         grid = board.get_grid()
         for r in range(BOARD_SIZE):
@@ -50,15 +52,20 @@ class Display:
                 size = CELL_SIZE - 2 * MARGIN
                 rect = pg.Rect(x, y, size, size)
                 if cell == 'H':
-                    pg.draw.rect(self.screen, COLOR_SNAKE_HEAD, rect, border_radius=8)
+                    pg.draw.rect(self.screen,
+                                 COLOR_SNAKE_HEAD, rect, border_radius=8)
                 elif cell == 'S':
-                    pg.draw.rect(self.screen, COLOR_SNAKE_BODY, rect, border_radius=5)
+                    pg.draw.rect(self.screen,
+                                 COLOR_SNAKE_BODY, rect, border_radius=5)
                 elif cell == 'G':
-                    pg.draw.ellipse(self.screen, COLOR_GREEN, rect)
+                    pg.draw.ellipse(self.screen,
+                                    COLOR_GREEN, rect)
                 elif cell == 'R':
-                    pg.draw.ellipse(self.screen, COLOR_RED, rect)
+                    pg.draw.ellipse(self.screen,
+                                    COLOR_RED, rect)
 
-        length_text = self.font.render(f"Length: {board.snake_length()}", True, COLOR_TEXT)
+        length_text = self.font.render(
+            f"Length: {board.snake_length()}", True, COLOR_TEXT)
         self.screen.blit(length_text, (5, 5))
 
         pg.display.flip()
