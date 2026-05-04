@@ -32,6 +32,8 @@ def parse_args():
     parser.add_argument(
         "-max-steps", dest="max_steps", type=int, default=1000,
         help="Hard cap on steps per session to prevent infinite loops")
+    parser.add_argument("-board_size", dest="board_size", type=int, default=10,
+                        help="Size of the board (NxN)")
     return parser.parse_args()
 
 
@@ -58,11 +60,12 @@ def run(args):
 
     visual = args.visual == "on"
     display = Display(visual=visual, speed=args.speed,
-                      step_by_step=args.step_by_step)
+                      step_by_step=args.step_by_step,
+                      board_size=args.board_size)
     best_score = 0
 
     for session in range(args.sessions):
-        board = Board()
+        board = Board(board_size=args.board_size)
         done = False
         steps = 0
         max_length = board.snake_length()
@@ -77,7 +80,7 @@ def run(args):
             action = agent.choose_action(state)
 
             if visual:
-                print(f"Action: {action}")
+                print(f"{action}")
 
             reward, done = board.step(action)
 

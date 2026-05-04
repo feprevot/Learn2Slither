@@ -5,7 +5,6 @@ import pygame
 
 CELL_SIZE = 60
 MARGIN = 2
-WINDOW_SIZE = BOARD_SIZE * CELL_SIZE
 
 COLOR_BG = (30, 30, 30)
 COLOR_GRID = (45, 45, 45)
@@ -17,16 +16,20 @@ COLOR_TEXT = (220, 220, 220)
 
 
 class Display:
-    def __init__(self, visual=True, speed=0.2, step_by_step=False):
+    def __init__(self, visual=True, speed=0.2, step_by_step=False,
+                 board_size=BOARD_SIZE):
         self.visual = visual
         self.speed = speed
         self.step_by_step = step_by_step
+        self.board_size = board_size
+        self.window_size = board_size * CELL_SIZE
         self.screen = None
 
         if self.visual:
             self.pygame = pygame
             pygame.init()
-            self.screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
+            self.screen = pygame.display.set_mode(
+                (self.window_size, self.window_size))
             pygame.display.set_caption("Learn2Slither")
             self.font = pygame.font.SysFont("monospace", 18)
             self.clock = pygame.time.Clock()
@@ -37,15 +40,17 @@ class Display:
         pg = self.pygame
         self.screen.fill(COLOR_BG)
 
-        for i in range(BOARD_SIZE + 1):
+        for i in range(self.board_size + 1):
             pg.draw.line(self.screen, COLOR_GRID,
-                         (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE))
+                         (i * CELL_SIZE, 0),
+                         (i * CELL_SIZE, self.window_size))
             pg.draw.line(self.screen, COLOR_GRID,
-                         (0, i * CELL_SIZE), (WINDOW_SIZE, i * CELL_SIZE))
+                         (0, i * CELL_SIZE),
+                         (self.window_size, i * CELL_SIZE))
 
         grid = board.get_grid()
-        for r in range(BOARD_SIZE):
-            for c in range(BOARD_SIZE):
+        for r in range(self.board_size):
+            for c in range(self.board_size):
                 cell = grid[r][c]
                 x = c * CELL_SIZE + MARGIN
                 y = r * CELL_SIZE + MARGIN

@@ -14,8 +14,6 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.q_table = {}
 
-    # ---------------------------------------------------------------- Q-table
-
     def _get_q(self, state, action):
         return self.q_table.get(state, {}).get(action, 0.0)
 
@@ -24,15 +22,11 @@ class Agent:
             self.q_table[state] = {}
         self.q_table[state][action] = value
 
-    # -------------------------------------------------------------- inference
-
     def choose_action(self, state):
         if random.random() < self.epsilon:
             return random.choice(ACTIONS)
         q_values = {a: self._get_q(state, a) for a in ACTIONS}
         return max(q_values, key=q_values.get)
-
-    # --------------------------------------------------------------- learning
 
     def update(self, state, action, reward, next_state, done):
         current_q = self._get_q(state, action)
@@ -46,8 +40,6 @@ class Agent:
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
-
-    # ------------------------------------------------------------ save / load
 
     def save(self, path):
         data = {
