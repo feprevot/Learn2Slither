@@ -2,6 +2,7 @@ import argparse
 from board_class import Board
 from agent_class import Agent
 from render_class import Display
+import os
 
 
 def parse_args():
@@ -38,8 +39,16 @@ def run(args):
     agent = Agent()
 
     if args.load:
-        agent.load(args.load)
-        print(f"Load trained model from {args.load}")
+        if os.path.exists(args.load):
+            try:
+                agent.load(args.load)
+                print(f"Load trained model from {args.load}")
+            except Exception as e:
+                print(f"Failed to load model from {args.load}: {e}")
+                return
+        else:
+            print(f"File {args.load} not found")
+            return
 
     if args.reset_epsilon:
         agent.epsilon = 1.0

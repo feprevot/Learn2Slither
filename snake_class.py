@@ -34,7 +34,9 @@ class Snake:
             self.segments.pop()
 
     def head_collides_body(self):
+        """Check if the head collides with the body."""
         return self.head() in self.segments[1:]
 
     def occupies(self, pos):
+        """Check if the snake occupies the given position."""
         return pos in self.segments
