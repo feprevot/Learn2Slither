@@ -58,7 +58,10 @@ def run(args):
     if args.dontlearn:
         agent.epsilon = 0.0
 
-    visual = args.visual == "on"
+    if args.visual == "on":
+        visual = True
+    else:
+        visual = False
     display = Display(visual=visual, speed=args.speed,
                       step_by_step=args.step_by_step,
                       board_size=args.board_size)
