@@ -29,6 +29,7 @@ class Agent:
         return max(q_values, key=q_values.get)
 
     def update(self, state, action, reward, next_state, done):
+        """Update Q-table using Q-learning formula. bellman equation"""
         current_q = self.get_q(state, action)
         if done:
             target = reward
