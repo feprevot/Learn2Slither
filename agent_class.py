@@ -14,10 +14,10 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.q_table = {}
 
-    def _get_q(self, state, action):
+    def get_q(self, state, action):
         return self.q_table.get(state, {}).get(action, 0.0)
 
-    def _set_q(self, state, action, value):
+    def set_q(self, state, action, value):
         if state not in self.q_table:
             self.q_table[state] = {}
         self.q_table[state][action] = value
@@ -25,18 +25,18 @@ class Agent:
     def choose_action(self, state):
         if random.random() < self.epsilon:
             return random.choice(ACTIONS)
-        q_values = {a: self._get_q(state, a) for a in ACTIONS}
+        q_values = {a: self.get_q(state, a) for a in ACTIONS}
         return max(q_values, key=q_values.get)
 
     def update(self, state, action, reward, next_state, done):
-        current_q = self._get_q(state, action)
+        current_q = self.get_q(state, action)
         if done:
             target = reward
         else:
-            best_next = max(self._get_q(next_state, a) for a in ACTIONS)
+            best_next = max(self.get_q(next_state, a) for a in ACTIONS)
             target = reward + self.gamma * best_next
         new_q = current_q + self.alpha * (target - current_q)
-        self._set_q(state, action, new_q)
+        self.set_q(state, action, new_q)
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay

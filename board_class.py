@@ -11,10 +11,10 @@ class Board:
         self.board_size = board_size
         self.green_apples = set()
         self.red_apple = None
-        self._place_snake()
-        self._place_apples()
+        self.place_snake()
+        self.place_apples()
 
-    def _place_snake(self):
+    def place_snake(self):
         """Place a 3-segment snake at a random valid position."""
         while True:
             direction = random.choice(ACTIONS)
@@ -35,7 +35,7 @@ class Board:
                 self.snake = Snake(segments)
                 return
 
-    def _empty_cells(self):
+    def empty_cells(self):
         occupied = set(self.snake.segments)
         occupied |= self.green_apples
         if self.red_apple:
@@ -47,18 +47,18 @@ class Board:
             if (r, c) not in occupied
         ]
 
-    def _place_apples(self):
+    def place_apples(self):
         for _ in range(2):
-            self._spawn_green()
-        self._spawn_red()
+            self.spawn_green()
+        self.spawn_red()
 
-    def _spawn_green(self):
-        empty = self._empty_cells()
+    def spawn_green(self):
+        empty = self.empty_cells()
         if empty:
             self.green_apples.add(random.choice(empty))
 
-    def _spawn_red(self):
-        empty = self._empty_cells()
+    def spawn_red(self):
+        empty = self.empty_cells()
         if empty:
             self.red_apple = random.choice(empty)
 
@@ -83,12 +83,12 @@ class Board:
         if new_head in self.green_apples:
             self.green_apples.remove(new_head)
             self.snake.grow(tail)
-            self._spawn_green()
+            self.spawn_green()
             return REWARD_GREEN, False
 
         if new_head == self.red_apple:
             self.snake.shrink()
-            self._spawn_red()
+            self.spawn_red()
             if self.snake.length() == 0:
                 return REWARD_RED, True
             return REWARD_RED, False

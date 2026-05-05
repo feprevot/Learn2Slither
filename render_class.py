@@ -74,7 +74,7 @@ class Display:
         self.screen.blit(length_text, (5, 5))
 
         pg.display.flip()
-        self._handle_events()
+        self.handle_events()
 
     def print_vision(self, board):
         print(board.format_vision())
@@ -83,12 +83,12 @@ class Display:
         if not self.visual:
             return
         if self.step_by_step:
-            self._wait_keypress()
+            self.wait_keypress()
         else:
             time.sleep(self.speed)
-            self._handle_events()
+            self.handle_events()
 
-    def _handle_events(self):
+    def handle_events(self):
         pg = self.pygame
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -98,7 +98,7 @@ class Display:
                 self.close()
                 sys.exit(0)
 
-    def _wait_keypress(self):
+    def wait_keypress(self):
         pg = self.pygame
         waiting = True
         while waiting:
