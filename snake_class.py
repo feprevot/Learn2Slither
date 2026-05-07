@@ -17,9 +17,9 @@ class Snake:
 
     def move(self, action):
         """Move the snake one step. Returns (new_head, removed_tail)."""
-        dr, dc = DIRECTION_VECTORS[action]
+        delta_r, delta_c = DIRECTION_VECTORS[action]
         r, c = self.head()
-        new_head = (r + dr, c + dc)
+        new_head = (r + delta_r, c + delta_c)
         self.segments.insert(0, new_head)
         tail = self.segments.pop()
         return new_head, tail
@@ -36,7 +36,3 @@ class Snake:
     def head_collides_body(self):
         """Check if the head collides with the body."""
         return self.head() in self.segments[1:]
-
-    def occupies(self, pos):
-        """Check if the snake occupies the given position."""
-        return pos in self.segments

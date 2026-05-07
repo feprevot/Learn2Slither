@@ -6,7 +6,7 @@ from constants import ACTIONS
 
 class Agent:
     def __init__(self, alpha=0.1,
-                 gamma=0.97, epsilon=1.0, epsilon_min=0.15, epsilon_decay=0.8):
+                 gamma=0.98, epsilon=1.0, epsilon_min=0.15, epsilon_decay=0.9):
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon

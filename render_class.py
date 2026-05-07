@@ -16,7 +16,7 @@ COLOR_TEXT = (220, 220, 220)
 
 
 class Display:
-    def __init__(self, visual=True, speed=0.2, step_by_step=False,
+    def __init__(self, visual=True, speed=0.1, step_by_step=False,
                  board_size=BOARD_SIZE):
         self.visual = visual
         self.speed = speed

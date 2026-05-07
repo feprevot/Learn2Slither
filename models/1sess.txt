@@ -1,1 +1,1 @@
-{"q_table": {"('D3', 'D3', 'D2', 'D1')": {"DOWN": -0.30000000000000004}, "('D1', 'D2', 'D2', 'D3')": {"UP": -5.0}}, "epsilon": 0.6400000000000001, "alpha": 0.1, "gamma": 0.97}
+{"q_table": {"(('danger', 'far'), ('danger', 'far'), ('danger', 'medium'), ('danger', 'near'))": {"RIGHT": -5.0}}, "epsilon": 0.8, "alpha": 0.1, "gamma": 0.97}

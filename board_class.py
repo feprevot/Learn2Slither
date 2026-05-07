@@ -3,6 +3,9 @@ from snake_class import Snake
 from constants import (
     UP, DOWN, LEFT, RIGHT, ACTIONS, DIRECTION_VECTORS, BOARD_SIZE,
     REWARD_GREEN, REWARD_RED, REWARD_DEATH, REWARD_STEP,
+    THREAT_DANGER, THREAT_GREEN, THREAT_RED,
+    DIST_NEAR, DIST_MEDIUM, DIST_FAR,
+    CELL_EMPTY, CELL_HEAD, CELL_BODY, CELL_GREEN, CELL_RED, CELL_WALL,
 )
 
 
@@ -36,16 +39,19 @@ class Board:
                 return
 
     def empty_cells(self):
+        """Return every (row, col) on the board that is free
+        (no snake segment, no green apple, no red apple)."""
         occupied = set(self.snake.segments)
-        occupied |= self.green_apples
+        occupied.update(self.green_apples)
         if self.red_apple:
             occupied.add(self.red_apple)
-        return [
-            (r, c)
-            for r in range(self.board_size)
-            for c in range(self.board_size)
-            if (r, c) not in occupied
-        ]
+
+        empty = []
+        for r in range(self.board_size):
+            for c in range(self.board_size):
+                if (r, c) not in occupied:
+                    empty.append((r, c))
+        return empty
 
     def place_apples(self):
         for _ in range(2):
@@ -67,9 +73,9 @@ class Board:
         Apply action, update board state.
         Returns (reward, done).
         """
-        dr, dc = DIRECTION_VECTORS[action]
+        delta_r, delta_c = DIRECTION_VECTORS[action]
         r, c = self.snake.head()
-        new_head = (r + dr, c + dc)
+        new_head = (r + delta_r, c + delta_c)
 
         if not (0 <= new_head[0] < self.board_size and
                 0 <= new_head[1] < self.board_size):
@@ -94,78 +100,96 @@ class Board:
             return REWARD_RED, False
         return REWARD_STEP, False
 
+    def scan_direction(self, head, dr, dc):
+        """
+        Walk one step at a time from the head in (dr, dc) until the first
+        non-empty cell or a wall. Returns (threat, distancebucket).
+        """
+        r, c = head[0] + dr, head[1] + dc
+        distance = 1
+        while 0 <= r < self.board_size and 0 <= c < self.board_size:
+            if (r, c) in self.snake.segments:
+                return THREAT_DANGER, self.bucket(distance)
+            if (r, c) in self.green_apples:
+                return THREAT_GREEN, self.bucket(distance)
+            if (r, c) == self.red_apple:
+                return THREAT_RED, self.bucket(distance)
+            r += dr
+            c += dc
+            distance += 1
+        return THREAT_DANGER, self.bucket(distance)
+
+    def bucket(self, distance):
+        if distance == 1:
+            return DIST_NEAR
+        if distance <= 3:
+            return DIST_MEDIUM
+        return DIST_FAR
+
     def get_state(self):
         """
-        Per direction, encode (first_object_seen, distance_bucket).
-          first_object_seen ∈ {'D' wall/body, 'G' green, 'R' red}
-          distance_bucket  ∈ {1 = next cell, 2 = 2-3 cells, 3 = farther}
+        State = one (threat, distance) pair per direction, in (UP, DOWN,
+        LEFT, RIGHT) order. Used as a hashable Q-table key.
         """
         head = self.snake.head()
-        state = []
-        for direction in [UP, DOWN, LEFT, RIGHT]:
-            dr, dc = DIRECTION_VECTORS[direction]
-            r, c = head[0] + dr, head[1] + dc
-            dist = 1
-            cell = 'D'
-            while 0 <= r < self.board_size and 0 <= c < self.board_size:
-                if (r, c) in self.snake.segments:
-                    cell = 'D'
-                    break
-                if (r, c) in self.green_apples:
-                    cell = 'G'
-                    break
-                if (r, c) == self.red_apple:
-                    cell = 'R'
-                    break
-                r += dr
-                c += dc
-                dist += 1
-            bucket = 1 if dist == 1 else (2 if dist <= 3 else 3)
-            state.append(f"{cell}{bucket}")
-        return tuple(state)
+        return tuple(
+            self.scan_direction(head, *DIRECTION_VECTORS[direction])
+            for direction in (UP, DOWN, LEFT, RIGHT)
+        )
+
+    def cell_symbols(self):
+        """
+        Map every occupied cell to its display symbol in one pass.
+        The head is written last so it always overrides a body segment.
+        """
+        symbols = {pos: CELL_GREEN for pos in self.green_apples}
+        if self.red_apple:
+            symbols[self.red_apple] = CELL_RED
+        for seg in self.snake.body():
+            symbols[seg] = CELL_BODY
+        symbols[self.snake.head()] = CELL_HEAD
+        return symbols
 
     def format_vision(self):
         """Return a human-readable string of the
         snake's vision for terminal display."""
         head_r, head_c = self.snake.head()
+        symbols = self.cell_symbols()
 
-        def cell(r, c):
-            if (r, c) in self.snake.segments:
-                return 'S'
-            if (r, c) in self.green_apples:
-                return 'G'
-            if (r, c) == self.red_apple:
-                return 'R'
-            return '0'
+        def col(r, c):
+            return symbols.get((r, c), CELL_EMPTY)
 
-        middle = ['W']
-        for c in range(self.board_size):
-            middle.append('H' if c == head_c else cell(head_r, c))
-        middle.append('W')
-        middle_line = ''.join(middle)
-
-        top = ['W'] + [cell(r, head_c) for r in range(head_r)]
-        bottom = [cell(r, head_c)
-                  for r in range(head_r + 1, self.board_size)] + ['W']
+        middle = (
+            CELL_WALL
+            + ''.join(col(head_r, c) for c in range(self.board_size))
+            + CELL_WALL
+        )
 
         pad = ' ' * (head_c + 1)
-        lines = [pad + ch for ch in top]
-        lines.append(middle_line)
-        lines.extend(pad + ch for ch in bottom)
-        return '\n'.join(lines)
+        top = [pad + CELL_WALL] + [
+            pad + col(r, head_c) for r in range(head_r)
+        ]
+        bottom = [
+            pad + col(r, head_c)
+            for r in range(head_r + 1, self.board_size)
+        ] + [pad + CELL_WALL]
+
+        return '\n'.join(top + [middle] + bottom)
 
     def snake_length(self):
         return self.snake.length()
 
     def get_grid(self):
-        """Return a 2D list of cell symbols for rendering."""
-        grid = [['0'] * self.board_size for _ in range(self.board_size)]
-        for pos in self.green_apples:
-            grid[pos[0]][pos[1]] = 'G'
-        if self.red_apple:
-            grid[self.red_apple[0]][self.red_apple[1]] = 'R'
-        for seg in self.snake.body():
-            grid[seg[0]][seg[1]] = 'S'
-        r, c = self.snake.head()
-        grid[r][c] = 'H'
+        """Return a 2D grid (list of rows) where each cell holds the
+        display symbol of what occupies it: 'H' (head), 'S' (body),
+        'G' (green apple), 'R' (red apple), or '0' (empty)."""
+        symbols = self.cell_symbols()
+
+        grid = []
+        for r in range(self.board_size):
+            row = []
+            for c in range(self.board_size):
+                symbol = symbols.get((r, c), CELL_EMPTY)
+                row.append(symbol)
+            grid.append(row)
         return grid
