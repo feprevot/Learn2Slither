@@ -1,5 +1,6 @@
 import argparse
 from board_class import Board
+from constants import BOARD_SIZE
 from agent_class import Agent
 from render_class import Display
 import os
@@ -32,7 +33,7 @@ def parse_args():
     parser.add_argument(
         "-max-steps", dest="max_steps", type=int, default=1000,
         help="Hard cap on steps per session to prevent infinite loops")
-    parser.add_argument("-board_size", dest="board_size", type=int, default=10,
+    parser.add_argument("-board_size", dest="board_size", type=int, default=BOARD_SIZE,
                         help="Size of the board (NxN)")
     return parser.parse_args()
 
