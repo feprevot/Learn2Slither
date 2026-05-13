@@ -84,8 +84,6 @@ class Agent:
 
     def save(self, path):
         """Serialize the Q-table and learning parameters to JSON."""
-        # JSON keys must be strings, so we convert each tuple state to its
-        # string repr; load() reverses this with ast.literal_eval.
         serialized_q_table = {
             str(state): action_values
             for state, action_values in self.q_table.items()
