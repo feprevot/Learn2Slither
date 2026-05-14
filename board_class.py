@@ -181,7 +181,11 @@ class Board:
 
     def get_grid(self):
         symbols = self.cell_symbols()
-        return [
-            [symbols.get((r, c), CELL_EMPTY) for c in range(self.board_size)]
-            for r in range(self.board_size)
-        ]
+        grid = []
+        for r in range(self.board_size):
+            row = []
+            for c in range(self.board_size):
+                symbol = symbols.get((r, c), CELL_EMPTY)
+                row.append(symbol)
+            grid.append(row)
+        return grid
