@@ -1,1 +1,1 @@
-{"q_table": {"(('danger', 'far'), ('danger', 'far'), ('danger', 'medium'), ('danger', 'near'))": {"RIGHT": -5.0}}, "epsilon": 0.8, "alpha": 0.1, "gamma": 0.97}
+{"q_table": {"(('danger', 'far'), ('danger', 'near'), ('danger', 'far'), ('danger', 'far'))": {"DOWN": -10.0}}, "epsilon": 0.998, "epsilon_min": 0.15, "epsilon_decay": 0.998, "alpha": 0.1, "gamma": 0.98}

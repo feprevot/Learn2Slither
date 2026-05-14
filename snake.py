@@ -33,7 +33,8 @@ def parse_args():
     parser.add_argument(
         "-max-steps", dest="max_steps", type=int, default=1000,
         help="Hard cap on steps per session to prevent infinite loops")
-    parser.add_argument("-board_size", dest="board_size", type=int, default=BOARD_SIZE,
+    parser.add_argument("-board_size", dest="board_size",
+                        type=int, default=BOARD_SIZE,
                         help="Size of the board (NxN)")
     return parser.parse_args()
 
@@ -100,17 +101,19 @@ def run(args):
             if visual:
                 display.wait(done)
 
-            if max_length > best_score:
-                best_score = max_length
-
+        if max_length > best_score:
+            best_score = max_length
         print(f"Game over, max length = {max_length}, max duration = {steps}")
 
     display.close()
     print(f"Best score across all sessions: {best_score}")
 
     if args.save:
-        agent.save(args.save)
-        print(f"Save learning state in {args.save}")
+        try:
+            agent.save(args.save)
+            print(f"Save learning state in {args.save}")
+        except Exception as e:
+            print(f"Failed to save model to {args.save}: {e}")
 
 
 if __name__ == "__main__":

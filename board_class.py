@@ -81,7 +81,7 @@ class Board:
                 0 <= new_head[1] < self.board_size):
             return REWARD_DEATH, True
 
-        _, tail = self.snake.move(action)
+        new_head, tail = self.snake.move(action)
 
         if self.snake.head_collides_body():
             return REWARD_DEATH, True
@@ -180,16 +180,8 @@ class Board:
         return self.snake.length()
 
     def get_grid(self):
-        """Return a 2D grid (list of rows) where each cell holds the
-        display symbol of what occupies it: 'H' (head), 'S' (body),
-        'G' (green apple), 'R' (red apple), or '0' (empty)."""
         symbols = self.cell_symbols()
-
-        grid = []
-        for r in range(self.board_size):
-            row = []
-            for c in range(self.board_size):
-                symbol = symbols.get((r, c), CELL_EMPTY)
-                row.append(symbol)
-            grid.append(row)
-        return grid
+        return [
+            [symbols.get((r, c), CELL_EMPTY) for c in range(self.board_size)]
+            for r in range(self.board_size)
+        ]
