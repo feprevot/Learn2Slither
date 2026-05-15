@@ -33,13 +33,21 @@ def train_model(sessions, path):
     agent = Agent()
     for _ in range(sessions):
         play_session(agent, learn=True)
-    agent.save(path)
+    try:
+        agent.save(path)
+    except Exception as e:
+        print(f"Failed to save model to {path}: {e}")
+        return None
     return agent
 
 
 def evaluate_model(path):
     agent = Agent()
-    agent.load(path)
+    try:
+        agent.load(path)
+    except Exception as e:
+        print(f"Failed to load model from {path}: {e}")
+        return 0, 0, 0
     agent.epsilon = 0.0
     best_length = 0
     best_duration = 0

@@ -18,7 +18,6 @@ class Board:
         self.place_apples()
 
     def place_snake(self):
-        """Place a 3-segment snake at a random valid position."""
         while True:
             direction = random.choice(ACTIONS)
             dr, dc = DIRECTION_VECTORS[direction]
@@ -39,8 +38,6 @@ class Board:
                 return
 
     def empty_cells(self):
-        """Return every (row, col) on the board that is free
-        (no snake segment, no green apple, no red apple)."""
         occupied = set(self.snake.segments)
         occupied.update(self.green_apples)
         if self.red_apple:
@@ -69,10 +66,6 @@ class Board:
             self.red_apple = random.choice(empty)
 
     def step(self, action):
-        """
-        Apply action, update board state.
-        Returns (reward, done).
-        """
         delta_r, delta_c = DIRECTION_VECTORS[action]
         r, c = self.snake.head()
         new_head = (r + delta_r, c + delta_c)
@@ -101,10 +94,6 @@ class Board:
         return REWARD_STEP, False
 
     def scan_direction(self, head, dr, dc):
-        """
-        Walk one step at a time from the head in (dr, dc) until the first
-        non-empty cell or a wall. Returns (threat, distancebucket).
-        """
         r, c = head[0] + dr, head[1] + dc
         distance = 1
         while 0 <= r < self.board_size and 0 <= c < self.board_size:
@@ -138,10 +127,6 @@ class Board:
         )
 
     def cell_symbols(self):
-        """
-        Map every occupied cell to its display symbol in one pass.
-        The head is written last so it always overrides a body segment.
-        """
         symbols = {pos: CELL_GREEN for pos in self.green_apples}
         if self.red_apple:
             symbols[self.red_apple] = CELL_RED
@@ -151,8 +136,6 @@ class Board:
         return symbols
 
     def format_vision(self):
-        """Return a human-readable string of the
-        snake's vision for terminal display."""
         head_r, head_c = self.snake.head()
         symbols = self.cell_symbols()
 

@@ -26,13 +26,18 @@ class Display:
         self.screen = None
 
         if self.visual:
-            self.pygame = pygame
-            pygame.init()
-            self.screen = pygame.display.set_mode(
-                (self.window_size, self.window_size))
-            pygame.display.set_caption("Learn2Slither")
-            self.font = pygame.font.SysFont("monospace", 18)
-            self.clock = pygame.time.Clock()
+            try:
+                self.pygame = pygame
+                pygame.init()
+                self.screen = pygame.display.set_mode(
+                    (self.window_size, self.window_size))
+                pygame.display.set_caption("Learn2Slither")
+                self.font = pygame.font.SysFont("monospace", 18)
+                self.clock = pygame.time.Clock()
+            except Exception as e:
+                print(f"Failed to initialize display: {e}."
+                      " Switching to visual=off.")
+                self.visual = False
 
     def render(self, board):
         if not self.visual:

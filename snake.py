@@ -35,8 +35,13 @@ def parse_args():
         help="Hard cap on steps per session to prevent infinite loops")
     parser.add_argument("-board_size", dest="board_size",
                         type=int, default=BOARD_SIZE,
-                        help="Size of the board (NxN)")
-    return parser.parse_args()
+                        help="Size of the board (NxN), minimum 10")
+    args = parser.parse_args()
+    if args.board_size < 10:
+        print(f"board_size must be at least 10, got "
+              f"{args.board_size}. Using 10.")
+        args.board_size = 10
+    return args
 
 
 def run(args):
