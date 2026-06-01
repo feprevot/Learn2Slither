@@ -6,8 +6,6 @@ hand-coded: the agent only receives rewards and, over thousands of games,
 discovers that eating green apples is good and that walls, its own body and red
 apples are bad.
 
-> 42 school project.
-
 ---
 
 ## Table of contents
